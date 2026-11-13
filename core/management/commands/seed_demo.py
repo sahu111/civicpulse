@@ -15,7 +15,7 @@ from issues.models import Issue, IssueMedia
 S = Issue.Status
 
 # All coordinates are FICTIONAL demo points around a made-up city centre.
-DEMO_CENTRE = (Decimal("21.145800"), Decimal("79.088200"))
+DEMO_CENTRE = (Decimal("21.251400"), Decimal("81.629600"))  # near Raipur, Chhattisgarh
 
 USERS = [
     ("admin", "admin@civicpulse.test", "Asha", "Admin", "ADMIN"),

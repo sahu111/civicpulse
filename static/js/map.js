@@ -15,6 +15,8 @@
     const map = L.map(el, { scrollWheelZoom: false }).setView(center, zoom);
     const tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
+      // OSM's tile policy requires a Referer; the site default ("same-origin") would send none.
+      referrerPolicy: "strict-origin-when-cross-origin",
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
     let failed = 0;

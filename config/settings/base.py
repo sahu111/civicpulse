@@ -136,5 +136,5 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }
 
-# Default map view (a demo centre; seed_demo coordinates are fictional points near it)
-MAP_DEFAULT_CENTER = (21.1458, 79.0882)
+# Default map view: Raipur, Chhattisgarh (seed_demo coordinates are fictional points near it)
+MAP_DEFAULT_CENTER = (21.2514, 81.6296)
