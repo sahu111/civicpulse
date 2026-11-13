@@ -1,0 +1,15 @@
+{% load ui %}
+{% if messages %}
+<div class="pointer-events-none fixed inset-x-4 bottom-4 z-50 flex flex-col items-end gap-2 sm:bottom-auto sm:top-4 sm:left-auto sm:right-4 sm:w-96" aria-live="polite">
+  {% for m in messages %}
+  <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" x-transition
+       class="pointer-events-auto flex w-full items-start gap-3 rounded-lg border bg-white p-4 text-sm shadow-lg {% if m.tags == 'error' %}border-red-200{% elif m.tags == 'success' %}border-emerald-200{% else %}border-slate-200{% endif %}">
+    <span class="{% if m.tags == 'error' %}text-red-600{% elif m.tags == 'success' %}text-emerald-600{% else %}text-indigo-600{% endif %}">
+      {% if m.tags == 'error' %}{% icon "alert-triangle" %}{% elif m.tags == 'success' %}{% icon "check-circle-2" %}{% else %}{% icon "info" %}{% endif %}
+    </span>
+    <p class="flex-1 text-slate-700">{{ m }}</p>
+    <button type="button" @click="show = false" class="text-slate-400 hover:text-slate-600" aria-label="Dismiss">{% icon "x" "size-4" %}</button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

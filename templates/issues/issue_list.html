@@ -1,0 +1,69 @@
+{% extends "layouts/app.html" %}
+{% load ui %}
+{% block title %}{{ heading }}{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+{% block content %}
+{% if task_stats %}
+<div class="mb-5 grid gap-4 sm:grid-cols-3">
+  <div class="card p-4"><p class="text-sm text-slate-500">To start</p><p class="mt-1 text-2xl font-semibold text-slate-900">{{ task_stats.to_start }}</p></div>
+  <div class="card p-4"><p class="text-sm text-slate-500">In progress</p><p class="mt-1 text-2xl font-semibold text-slate-900">{{ task_stats.in_progress }}</p></div>
+  <div class="card p-4"><p class="text-sm text-slate-500">Awaiting verification</p><p class="mt-1 text-2xl font-semibold text-slate-900">{{ task_stats.awaiting }}</p></div>
+</div>
+{% endif %}
+<form method="get" class="card mb-5 grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-6">
+  <div class="sm:col-span-2">
+    <label for="q" class="sr-only">Search</label>
+    <input id="q" name="q" value="{{ f.q }}" placeholder="Search title, code or location" class="input">
+  </div>
+  <select name="status" class="input" aria-label="Status"><option value="">All statuses</option>{% for v, l in status_choices %}<option value="{{ v }}" {% if f.status == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+  <select name="category" class="input" aria-label="Category"><option value="">All categories</option>{% for v, l in category_choices %}<option value="{{ v }}" {% if f.category == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+  <select name="priority" class="input" aria-label="Priority"><option value="">All priorities</option>{% for v, l in priority_choices %}<option value="{{ v }}" {% if f.priority == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+  <div class="flex gap-2">
+    <select name="sort" class="input" aria-label="Sort">{% for v, l in sort_choices %}<option value="{{ v }}" {% if f.sort == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+    <button class="btn-primary" aria-label="Apply filters">{% icon "search" "size-4" %}</button>
+  </div>
+</form>
+
+{% if mode == "admin" %}
+<div class="mb-4 flex justify-end"><a href="{% url 'issues:export' %}?{{ qs }}" class="btn-secondary">Export these results (CSV)</a></div>
+{% endif %}
+<div class="card">
+  {% if page_obj.object_list %}
+  <ul class="divide-y divide-slate-100">
+    {% for issue in page_obj.object_list %}
+    <li class="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-2">
+          <span class="whitespace-nowrap font-mono text-xs text-slate-500">{{ issue.tracking_code }}</span>
+          {% if mode != "community" or issue.reporter_id == user.id %}
+          <a href="{% url 'issues:detail' issue.tracking_code %}" class="truncate text-sm font-medium text-slate-900 hover:text-indigo-600">{{ issue.title }}</a>
+          {% else %}
+          <span class="truncate text-sm font-medium text-slate-900">{{ issue.title }}</span>
+          {% endif %}
+        </div>
+        <p class="mt-0.5 truncate text-xs text-slate-500">
+          {{ issue.get_category_display }} · {{ issue.location_text }} · {{ issue.created_at|date:"d M Y" }}
+          {% if mode == "admin" %} · {{ issue.assigned_to.get_full_name|default:"Unassigned" }}{% endif %}
+        </p>
+      </div>
+      <span class="badge {{ issue.priority|priority_classes }}">{{ issue.get_priority_display }}</span>
+      <span class="badge {{ issue.status|status_classes }}">{{ issue.get_status_display }}</span>
+      {% if mode == "community" %}
+      <form method="post" action="{% url 'issues:vote' issue.tracking_code %}">
+        {% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button class="btn-secondary px-3 py-1 {% if issue.id in voted_ids %}text-indigo-600{% endif %}" {% if issue.id in voted_ids %}disabled{% endif %}>
+          {% icon "check-circle-2" "size-4" %}{{ issue.vote_count }}<span class="sr-only"> supporters</span>
+        </button>
+      </form>
+      {% else %}
+      <span class="text-xs text-slate-500" title="Supporters">{{ issue.vote_count }} supporters</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% include "partials/pagination.html" %}
+  {% else %}
+  {% include "partials/empty_state.html" with icon_name="search" title="No reports found" text="Try clearing the filters or searching for something else." %}
+  {% endif %}
+</div>
+{% endblock %}

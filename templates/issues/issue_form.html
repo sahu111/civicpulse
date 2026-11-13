@@ -1,0 +1,58 @@
+{% extends "layouts/app.html" %}
+{% load ui %}
+{% block title %}Report an issue{% endblock %}
+{% block page_title %}Report an issue{% endblock %}
+{% block head %}{% include "partials/leaflet_head.html" %}{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const lat = document.getElementById("id_latitude"), lng = document.getElementById("id_longitude");
+  const picker = CivicMap.picker(document.getElementById("picker"), lat, lng);
+  document.addEventListener("location-filled", () => picker.fromInputs());
+});
+</script>
+{% endblock %}
+{% block content %}
+<form id="issue-form" method="post" enctype="multipart/form-data" class="card max-w-3xl space-y-5 p-5" novalidate>
+  {% csrf_token %}
+  {% include "partials/form_errors.html" %}
+  {% include "partials/field.html" with field=form.title %}
+  {% include "partials/field.html" with field=form.description %}
+  <div class="grid gap-4 sm:grid-cols-2">
+    {% include "partials/field.html" with field=form.category %}
+    {% include "partials/field.html" with field=form.location_text %}
+  </div>
+  <fieldset x-data="{ msg: '' }" class="rounded-lg border border-slate-200 p-4">
+    <legend class="px-1 text-sm font-medium text-slate-700">Location on the map</legend>
+    <p class="mb-2 text-xs text-slate-500">Click the map or drag the pin to set the exact spot.</p>
+    <div id="picker" class="mb-2 h-64 w-full overflow-hidden rounded-lg bg-slate-100" data-lat="{{ map_center.0 }}" data-lng="{{ map_center.1 }}" data-fallback="tile-fallback"></div>
+    <div class="mb-4">{% include "partials/tile_fallback.html" %}</div>
+    <div class="grid gap-4 sm:grid-cols-2">
+      {% include "partials/field.html" with field=form.latitude %}
+      {% include "partials/field.html" with field=form.longitude %}
+    </div>
+    <div class="mt-3 flex flex-wrap items-center gap-3">
+      <button type="button" class="btn-secondary"
+        @click="if (!navigator.geolocation) { msg = 'Location is not available in this browser.'; return; }
+                msg = 'Finding your location...';
+                navigator.geolocation.getCurrentPosition(
+                  p => { $root.querySelector('#id_latitude').value = p.coords.latitude.toFixed(6);
+                         $root.querySelector('#id_longitude').value = p.coords.longitude.toFixed(6); msg = 'Location filled in.';
+                         $dispatch('location-filled'); },
+                  () => { msg = 'Could not get your location. Enter it by hand.'; })">
+        {% icon "map-pin" "size-4" %}Use my location
+      </button>
+      <span class="text-xs text-slate-500" x-text="msg"></span>
+    </div>
+  </fieldset>
+  <div id="suggestions" aria-live="polite" hx-get="{% url 'issues:suggest' %}"
+       hx-trigger="load, keyup changed delay:700ms from:#issue-form, change from:#issue-form, pin-moved from:#issue-form"
+       hx-include="#id_title, #id_description, #id_category, #id_latitude, #id_longitude"></div>
+  {% include "partials/field.html" with field=form.photo %}
+  {% include "partials/field.html" with field=form.notes %}
+  <div class="flex gap-3">
+    <button class="btn-primary">Submit report</button>
+    <a href="{% url 'issues:dashboard' %}" class="btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock %}

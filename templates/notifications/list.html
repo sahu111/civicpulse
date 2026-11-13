@@ -1,0 +1,30 @@
+{% extends "layouts/app.html" %}
+{% block title %}Notifications{% endblock %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="card max-w-3xl">
+  <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+    <p class="text-sm text-slate-500">{{ unread_count }} unread</p>
+    {% if unread_count %}
+    <form method="post" action="{% url 'notifications:read-all' %}">{% csrf_token %}<button class="btn-secondary px-3 py-1">Mark all as read</button></form>
+    {% endif %}
+  </div>
+  {% if page_obj.object_list %}
+  <ul class="divide-y divide-slate-100">
+    {% for n in page_obj.object_list %}
+    <li class="flex items-start gap-3 px-4 py-3 {% if not n.read_at %}bg-indigo-50/50{% endif %}">
+      <span class="mt-1.5 size-2 shrink-0 rounded-full {% if n.read_at %}bg-transparent{% else %}bg-indigo-500{% endif %}"></span>
+      <div class="min-w-0 flex-1">
+        {% if n.issue %}<a href="{% url 'issues:detail' n.issue.tracking_code %}" class="text-sm text-slate-900 hover:text-indigo-600">{{ n.message }}</a>
+        {% else %}<p class="text-sm text-slate-900">{{ n.message }}</p>{% endif %}
+        <p class="text-xs text-slate-500">{{ n.created_at|timesince }} ago</p>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% include "partials/pagination.html" %}
+  {% else %}
+  {% include "partials/empty_state.html" with icon_name="bell" title="No notifications" text="Updates about your reports and tasks will appear here." %}
+  {% endif %}
+</div>
+{% endblock %}

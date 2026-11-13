@@ -1,0 +1,22 @@
+{% if cat or dups %}
+<div class="rounded-lg border border-indigo-100 bg-indigo-50/60 p-4 text-sm text-slate-700">
+  <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">Recommendation (rule-based)</p>
+  {% if cat and cat != current %}
+  <div x-data="{ applied: false }" class="mt-2 flex flex-wrap items-center gap-2">
+    <span>Your words match <strong>{{ cat_label }}</strong> ({{ words|join:", " }}).</span>
+    <button type="button" class="btn-secondary px-3 py-1" :disabled="applied"
+            @click="document.getElementById('id_category').value = '{{ cat }}'; applied = true"
+            x-text="applied ? 'Category set' : 'Use this category'">Use this category</button>
+  </div>
+  {% elif cat %}
+  <p class="mt-2">The category you picked matches your description.</p>
+  {% endif %}
+  {% if dups %}
+  <p class="mt-3 font-medium text-slate-900">Similar open reports nearby</p>
+  <ul class="mt-1 space-y-1">
+    {% for d in dups %}<li><span class="font-mono text-xs text-slate-500">{{ d.issue.tracking_code }}</span> {{ d.issue.title }} <span class="text-xs text-slate-500">({{ d.distance_m }} m away)</span></li>{% endfor %}
+  </ul>
+  <p class="mt-2 text-xs text-slate-500">If one of these is the same problem, you can support it from the <a class="text-indigo-600 underline" href="{% url 'issues:list' %}">community list</a> instead.</p>
+  {% endif %}
+</div>
+{% endif %}

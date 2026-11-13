@@ -1,0 +1,129 @@
+{% extends "layouts/app.html" %}
+{% load static ui %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+{% block content %}
+<div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+  <p class="text-sm text-slate-500">Live figures from the database.</p>
+  <a href="{% url 'issues:export' %}" class="btn-secondary">Export all reports (CSV)</a>
+</div>
+
+<div class="grid grid-cols-2 gap-4 lg:grid-cols-6">
+  <div class="card p-4"><p class="text-xs text-slate-500">Total reports</p><p class="mt-1 text-2xl font-semibold text-slate-900">{{ s.total }}</p></div>
+  <div class="card p-4"><p class="text-xs text-slate-500">Open</p><p class="mt-1 text-2xl font-semibold text-slate-900">{{ s.open }}</p></div>
+  <div class="card p-4"><p class="text-xs text-slate-500">High priority open</p><p class="mt-1 text-2xl font-semibold text-red-600">{{ s.high_open }}</p></div>
+  <div class="card p-4"><p class="text-xs text-slate-500">Resolved</p><p class="mt-1 text-2xl font-semibold text-emerald-600">{{ s.resolved }}</p></div>
+  <div class="card p-4"><p class="text-xs text-slate-500">Avg resolution</p><p class="mt-1 text-2xl font-semibold text-slate-900">{% if s.avg_resolution_hours is not None %}{{ s.avg_resolution_hours }} h{% else %}<span class="text-base text-slate-400">No data</span>{% endif %}</p></div>
+  <div class="card p-4"><p class="text-xs text-slate-500">Overdue</p><p class="mt-1 text-2xl font-semibold text-amber-600">{{ s.overdue }}</p></div>
+</div>
+
+<div class="mt-5 grid gap-5 lg:grid-cols-2">
+  <section class="card p-4 lg:col-span-2">
+    <h2 class="text-sm font-semibold text-slate-900">Weekly trend</h2>
+    <div class="chart-box relative mt-3 h-64" data-chart="weekly"><div class="chart-loading absolute inset-0">{% include "partials/skeleton.html" %}</div><canvas aria-label="Reports created and resolved per week" role="img"></canvas></div>
+  </section>
+  <section class="card p-4">
+    <h2 class="text-sm font-semibold text-slate-900">By status</h2>
+    <div class="chart-box relative mt-3 h-64" data-chart="status"><div class="chart-loading absolute inset-0">{% include "partials/skeleton.html" %}</div><canvas aria-label="Reports by status" role="img"></canvas></div>
+  </section>
+  <section class="card p-4">
+    <h2 class="text-sm font-semibold text-slate-900">By category</h2>
+    <div class="chart-box relative mt-3 h-64" data-chart="category"><div class="chart-loading absolute inset-0">{% include "partials/skeleton.html" %}</div><canvas aria-label="Reports by category" role="img"></canvas></div>
+  </section>
+</div>
+<p id="chart-error" hidden class="mt-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">Charts could not be loaded. Refresh the page to try again.</p>
+
+<div class="mt-5 grid gap-5 lg:grid-cols-3">
+  <section class="card lg:col-span-2">
+    <div class="border-b border-slate-200 px-4 py-3">
+      <h2 class="text-sm font-semibold text-slate-900">Overdue reports</h2>
+      <p class="text-xs text-slate-500">Open longer than the target: high {{ targets.HIGH }} h, medium {{ targets.MEDIUM }} h, low {{ targets.LOW }} h.</p>
+    </div>
+    {% if overdue %}
+    <ul class="divide-y divide-slate-100">
+      {% for i in overdue %}
+      <li><a href="{% url 'issues:detail' i.tracking_code %}" class="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 hover:bg-slate-50">
+        <span class="whitespace-nowrap font-mono text-xs text-slate-500">{{ i.tracking_code }}</span>
+        <span class="min-w-0 flex-1 truncate text-sm text-slate-900">{{ i.title }}</span>
+        <span class="badge {{ i.priority|priority_classes }}">{{ i.get_priority_display }}</span>
+        <span class="text-xs text-slate-500">{{ i.created_at|timesince }} old</span>
+      </a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    {% include "partials/empty_state.html" with icon_name="check-circle-2" title="Nothing overdue" text="Every open report is within its resolution target." %}
+    {% endif %}
+  </section>
+  <div class="space-y-5">
+    <section class="card">
+      <div class="border-b border-slate-200 px-4 py-3">
+        <h2 class="text-sm font-semibold text-slate-900">Hotspots</h2>
+        <p class="text-xs text-slate-500">Map grid cells with {{ hotspot_min }} or more open reports.</p>
+      </div>
+      {% if hotspots %}
+      <ul class="divide-y divide-slate-100 text-sm">
+        {% for h in hotspots %}<li class="flex justify-between px-4 py-2"><span class="font-mono text-xs text-slate-600">{{ h.lat }}, {{ h.lng }}</span><span class="font-medium text-slate-900">{{ h.count }} reports</span></li>{% endfor %}
+      </ul>
+      {% else %}
+      {% include "partials/empty_state.html" with icon_name="map-pin" title="No hotspots" text="No area has enough open reports yet." %}
+      {% endif %}
+    </section>
+    <section class="card">
+      <div class="border-b border-slate-200 px-4 py-3"><h2 class="text-sm font-semibold text-slate-900">Staff workload</h2></div>
+      {% if workload %}
+      <ul class="divide-y divide-slate-100 text-sm">
+        {% for u in workload %}<li class="flex justify-between gap-3 px-4 py-2"><span class="text-slate-900">{{ u.get_full_name|default:u.username }}</span><span class="text-slate-500">{{ u.open_tasks }} open · {{ u.done }} resolved</span></li>{% endfor %}
+      </ul>
+      {% else %}
+      {% url 'staff' as staff_url %}
+      {% include "partials/empty_state.html" with icon_name="users" title="No staff yet" text="Add field staff to start assigning reports." action_url=staff_url action_label="Manage staff" %}
+      {% endif %}
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/chart.min.js' %}"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const STATUS_COLORS = {REPORTED:"#64748b",UNDER_REVIEW:"#0284c7",ASSIGNED:"#7c3aed",IN_PROGRESS:"#d97706",RESOLVED:"#059669",REJECTED:"#dc2626"};
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  Chart.defaults.color = "#64748b";
+  const box = k => document.querySelector(`[data-chart="${k}"]`);
+  function done(k, empty) {
+    const b = box(k);
+    b.querySelector(".chart-loading").remove();
+    if (empty) b.insertAdjacentHTML("beforeend", '<p class="absolute inset-0 grid place-items-center text-sm text-slate-400">No reports yet</p>');
+  }
+  const axes = { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#f1f5f9" } }, x: { grid: { display: false } } };
+  try {
+    const res = await fetch("{% url 'analytics:charts' %}", { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(res.status);
+    const d = await res.json();
+    const sum = a => a.reduce((x, y) => x + y, 0);
+
+    const w = d.weekly;
+    new Chart(box("weekly").querySelector("canvas"), { type: "line", data: { labels: w.labels, datasets: [
+      { label: "Reported", data: w.reported, borderColor: "#4f46e5", backgroundColor: "#4f46e5", tension: .3 },
+      { label: "Resolved", data: w.resolved, borderColor: "#059669", backgroundColor: "#059669", tension: .3 },
+    ]}, options: { maintainAspectRatio: false, scales: axes, plugins: { legend: { position: "bottom" } } } });
+    done("weekly", !sum(w.reported) && !sum(w.resolved));
+
+    const st = d.by_status;
+    new Chart(box("status").querySelector("canvas"), { type: "bar", data: { labels: st.map(r => r.label), datasets: [
+      { label: "Reports", data: st.map(r => r.count), backgroundColor: st.map(r => STATUS_COLORS[r.key]), borderRadius: 4 },
+    ]}, options: { maintainAspectRatio: false, scales: axes, plugins: { legend: { display: false } } } });
+    done("status", !sum(st.map(r => r.count)));
+
+    const ct = d.by_category;
+    new Chart(box("category").querySelector("canvas"), { type: "bar", data: { labels: ct.map(r => r.label), datasets: [
+      { label: "Reports", data: ct.map(r => r.count), backgroundColor: "#6366f1", borderRadius: 4 },
+    ]}, options: { indexAxis: "y", maintainAspectRatio: false, scales: { x: axes.y, y: { grid: { display: false } } }, plugins: { legend: { display: false } } } });
+    done("category", !sum(ct.map(r => r.count)));
+  } catch (e) {
+    document.querySelectorAll(".chart-loading").forEach(n => n.remove());
+    document.getElementById("chart-error").hidden = false;
+  }
+});
+</script>
+{% endblock %}

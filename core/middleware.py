@@ -1,0 +1,15 @@
+from django.conf import settings
+
+
+class SecurityHeadersMiddleware:
+    """Adds the Content-Security-Policy and Permissions-Policy headers from settings."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if getattr(settings, "CONTENT_SECURITY_POLICY", ""):
+            response.setdefault("Content-Security-Policy", settings.CONTENT_SECURITY_POLICY)
+        response.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=(self)")
+        return response

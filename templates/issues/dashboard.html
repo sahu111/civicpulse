@@ -1,0 +1,34 @@
+{% extends "layouts/app.html" %}
+{% load ui %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Welcome, {{ user.first_name|default:user.username }}{% endblock %}
+{% block content %}
+<div class="grid gap-4 sm:grid-cols-3">
+  <div class="card p-5"><p class="text-sm text-slate-500">Total reports</p><p class="mt-1 text-3xl font-semibold text-slate-900">{{ stats.total }}</p></div>
+  <div class="card p-5"><p class="text-sm text-slate-500">Open</p><p class="mt-1 text-3xl font-semibold text-slate-900">{{ stats.open }}</p></div>
+  <div class="card p-5"><p class="text-sm text-slate-500">Resolved</p><p class="mt-1 text-3xl font-semibold text-slate-900">{{ stats.resolved }}</p></div>
+</div>
+
+<div class="card mt-6">
+  <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+    <h2 class="text-sm font-semibold text-slate-900">Recent reports</h2>
+    <a href="{% url 'issues:create' %}" class="btn-primary">{% icon "file-plus" "size-4" %}Report issue</a>
+  </div>
+  {% if recent %}
+  <ul class="divide-y divide-slate-100">
+    {% for issue in recent %}
+    <li>
+      <a href="{% url 'issues:detail' issue.tracking_code %}" class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 hover:bg-slate-50">
+        <span class="whitespace-nowrap font-mono text-xs text-slate-500">{{ issue.tracking_code }}</span>
+        <span class="min-w-0 flex-1 truncate text-sm font-medium text-slate-900">{{ issue.title }}</span>
+        <span class="badge {{ issue.status|status_classes }}">{{ issue.get_status_display }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  {% url 'issues:create' as create_url %}
+  {% include "partials/empty_state.html" with icon_name="inbox" title="No reports yet" text="Spotted a pothole, broken light or leak? Report it and track it here." action_url=create_url action_label="Report an issue" %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "layouts/app.html" %}
+{% block title %}Staff{% endblock %}
+{% block page_title %}Staff management{% endblock %}
+{% block content %}
+<div class="grid gap-5 lg:grid-cols-3">
+  <section class="card lg:col-span-2">
+    <div class="border-b border-slate-200 px-4 py-3"><h2 class="text-sm font-semibold text-slate-900">Staff and admins</h2></div>
+    <ul class="divide-y divide-slate-100">
+      {% for p in people %}
+      <li class="flex flex-wrap items-center gap-3 px-4 py-3">
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-slate-900">{{ p.get_full_name|default:p.username }}{% if not p.is_active %} <span class="badge bg-slate-50 text-slate-500 ring-slate-300">Inactive</span>{% endif %}</p>
+          <p class="truncate text-xs text-slate-500">{{ p.email }} · {{ p.open_tasks }} open task{{ p.open_tasks|pluralize }}</p>
+        </div>
+        {% if p.pk != user.pk %}
+        <form method="post" action="{% url 'staff-action' p.pk %}" class="flex gap-2">{% csrf_token %}<input type="hidden" name="action" value="role">
+          <select name="role" class="input py-1" aria-label="Role for {{ p.email }}">{% for v, l in roles %}<option value="{{ v }}" {% if p.role == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+          <button class="btn-secondary px-3 py-1">Save</button>
+        </form>
+        <form method="post" action="{% url 'staff-action' p.pk %}">{% csrf_token %}<input type="hidden" name="action" value="active"><input type="hidden" name="active" value="{% if p.is_active %}0{% else %}1{% endif %}">
+          <button class="btn-secondary px-3 py-1">{% if p.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+        </form>
+        {% else %}<span class="text-xs text-slate-400">You</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  <form method="post" class="card space-y-4 p-5" novalidate>
+    {% csrf_token %}
+    <h2 class="text-sm font-semibold text-slate-900">Add a staff member</h2>
+    <p class="text-xs text-slate-500">A one-time password is generated and shown once after saving.</p>
+    {% include "partials/form_errors.html" %}
+    {% for field in form %}{% include "partials/field.html" %}{% endfor %}
+    <button class="btn-primary w-full">Create staff account</button>
+  </form>
+</div>
+{% endblock %}

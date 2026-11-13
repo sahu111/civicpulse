@@ -1,0 +1,43 @@
+{% extends "layouts/app.html" %}
+{% block title %}Map{% endblock %}
+{% block page_title %}Issue map{% endblock %}
+{% block head %}{% include "partials/leaflet_head.html" %}{% endblock %}
+{% block content %}
+<form id="map-filters" class="card mb-4 grid gap-3 p-4 sm:grid-cols-3">
+  <select name="status" class="input" aria-label="Status"><option value="">All statuses</option>{% for v, l in status_choices %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <select name="category" class="input" aria-label="Category"><option value="">All categories</option>{% for v, l in category_choices %}<option value="{{ v }}">{{ l }}</option>{% endfor %}</select>
+  <p id="map-status" class="self-center text-sm text-slate-500" role="status" aria-live="polite">Loading reports...</p>
+</form>
+<div class="card overflow-hidden">
+  <div id="issue-map" class="h-[60vh] min-h-80 w-full bg-slate-100" data-api="{% url 'issues:map-data' %}"
+       data-lat="{{ center.0 }}" data-lng="{{ center.1 }}" data-fallback="tile-fallback"></div>
+  <div class="space-y-3 border-t border-slate-200 p-4">
+    {% include "partials/tile_fallback.html" %}
+    <ul class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-600" aria-label="Legend">
+      {% for v, l in status_choices %}<li class="flex items-center gap-1.5"><span class="legend-dot size-3 rounded-full" data-status="{{ v }}"></span>{{ l }}</li>{% endfor %}
+    </ul>
+    <p class="text-xs text-slate-500">{{ scope_note }}</p>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".legend-dot").forEach(d => d.style.background = CivicMap.STATUS_COLORS[d.dataset.status]);
+  const map = CivicMap.issues(document.getElementById("issue-map"));
+  const form = document.getElementById("map-filters");
+  const status = document.getElementById("map-status");
+  async function refresh() {
+    status.textContent = "Loading reports...";
+    try {
+      const n = await map.load(new URLSearchParams(new FormData(form)));
+      status.textContent = n ? `${n} report${n === 1 ? "" : "s"} shown` : "No reports match these filters.";
+    } catch (e) {
+      status.textContent = "Could not load reports. Please try again.";
+    }
+  }
+  form.addEventListener("change", refresh);
+  refresh();
+});
+</script>
+{% endblock %}

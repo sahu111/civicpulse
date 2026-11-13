@@ -1,0 +1,46 @@
+{% extends "layouts/plain.html" %}
+{% load ui %}
+{% block title %}Report and track city issues{% endblock %}
+{% block content %}
+<section class="bg-navy-900">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-2 lg:items-center">
+    <div>
+      <p class="text-sm font-medium text-indigo-300">Smart city issue management</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">Report it once. Watch it get fixed.</h1>
+      <p class="mt-5 text-lg text-slate-300">Citizens pin potholes, broken lights and leaks on a map. The city reviews, assigns field staff, and every step is logged so you can follow it to resolution.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/register/" class="btn-primary">Report an issue {% icon "arrow-right" "size-4" %}</a>
+        <a href="/login/" class="btn border border-navy-700 text-slate-200 hover:bg-navy-800">Sign in</a>
+      </div>
+    </div>
+    <div class="card overflow-hidden border-navy-700 bg-navy-800 p-5 shadow-xl" aria-hidden="true">
+      <div class="flex items-center justify-between">
+        <span class="text-sm font-medium text-white">Tracking CP-2611-0001</span>
+        <span class="badge bg-amber-400/10 text-amber-300 ring-amber-400/30">In progress</span>
+      </div>
+      <ol class="mt-5 space-y-4 text-sm">
+        {% for step, done in steps %}
+        <li class="flex items-center gap-3 {% if done %}text-slate-200{% else %}text-slate-500{% endif %}">
+          <span class="grid size-6 place-items-center rounded-full {% if done %}bg-indigo-500 text-white{% else %}border border-navy-700{% endif %}">{% if done %}{% icon "check-circle-2" "size-4" %}{% endif %}</span>
+          {{ step }}
+        </li>
+        {% endfor %}
+      </ol>
+      <p class="mt-5 text-xs text-slate-500">Example timeline</p>
+    </div>
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+  <h2 class="text-2xl font-semibold tracking-tight text-slate-900">How it works</h2>
+  <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {% for f in features %}
+    <div class="card p-5">
+      <span class="grid size-10 place-items-center rounded-lg bg-indigo-50 text-indigo-600">{% icon f.icon %}</span>
+      <h3 class="mt-4 font-semibold text-slate-900">{{ f.title }}</h3>
+      <p class="mt-1 text-sm text-slate-500">{{ f.text }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

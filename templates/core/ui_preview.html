@@ -1,0 +1,22 @@
+{% extends "layouts/app.html" %}
+{% block title %}UI preview{% endblock %}
+{% block page_title %}UI preview (debug only){% endblock %}
+{% block content %}
+<div class="grid gap-5 md:grid-cols-2">
+  <div class="card">
+    <div class="border-b border-slate-200 px-4 py-3 text-sm font-semibold">Status badges</div>
+    <div class="flex flex-wrap gap-2 p-4">
+      <span class="badge bg-slate-50 text-slate-700 ring-slate-300">Reported</span>
+      <span class="badge bg-sky-50 text-sky-700 ring-sky-200">Under review</span>
+      <span class="badge bg-violet-50 text-violet-700 ring-violet-200">Assigned</span>
+      <span class="badge bg-amber-50 text-amber-700 ring-amber-200">In progress</span>
+      <span class="badge bg-emerald-50 text-emerald-700 ring-emerald-200">Resolved</span>
+      <span class="badge bg-red-50 text-red-700 ring-red-200">Rejected</span>
+    </div>
+  </div>
+  <div class="card"><div class="border-b border-slate-200 px-4 py-3 text-sm font-semibold">Loading state</div>{% include "partials/skeleton.html" %}</div>
+  <div class="card md:col-span-2">
+    {% include "partials/empty_state.html" with icon_name="inbox" title="No reports yet" text="When you report an issue it will show up here with its tracking code." action_url="#" action_label="Report an issue" %}
+  </div>
+</div>
+{% endblock %}

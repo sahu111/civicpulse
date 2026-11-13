@@ -1,0 +1,121 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.7, pytest-9.2.0, pluggy-1.7.0 -- F:\Project\civicpulse\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+django: version: 5.2.19, settings: config.settings.dev (from ini)
+rootdir: F:\Project\civicpulse
+configfile: pytest.ini
+testpaths: tests
+plugins: Faker-40.54.0, cov-7.1.0, django-4.14.0, playwright-0.10.0
+collecting ... collected 49 items / 1 deselected / 48 selected
+
+tests/integration/test_phase2.py::test_register_always_creates_citizen PASSED [  2%]
+tests/integration/test_phase2.py::test_wrong_password_fails_and_logout_ends_session PASSED [  4%]
+tests/integration/test_phase2.py::test_citizen_cannot_open_another_citizens_report PASSED [  6%]
+tests/integration/test_phase2.py::test_staff_sees_only_assigned_issues PASSED [  8%]
+tests/integration/test_phase2.py::test_citizen_cannot_use_admin_or_staff_urls PASSED [ 10%]
+tests/integration/test_phase2.py::test_anonymous_redirected_to_login PASSED [ 12%]
+tests/integration/test_phase2.py::test_staff_cannot_submit_issue PASSED  [ 14%]
+tests/integration/test_phase2.py::test_tracking_codes_are_unique_and_formatted PASSED [ 16%]
+tests/integration/test_phase2.py::test_submit_with_photo_and_reject_fake_image PASSED [ 18%]
+tests/integration/test_phase2.py::test_missing_coordinates_and_long_title_rejected PASSED [ 20%]
+tests/integration/test_phase2.py::test_invalid_transition_refused_and_nothing_written PASSED [ 22%]
+tests/integration/test_phase2.py::test_reject_requires_reason PASSED     [ 25%]
+tests/integration/test_phase2.py::test_full_workflow_writes_history_and_notifications PASSED [ 27%]
+tests/integration/test_phase2.py::test_reporter_can_reopen_resolved_issue PASSED [ 29%]
+tests/integration/test_phase2.py::test_reassign_closes_old_assignment PASSED [ 31%]
+tests/integration/test_phase2.py::test_events_are_append_only PASSED     [ 33%]
+tests/integration/test_phase2.py::test_vote_only_once PASSED             [ 35%]
+tests/integration/test_phase2.py::test_staff_cannot_vote PASSED          [ 37%]
+tests/integration/test_phase3.py::test_full_flow_through_http PASSED     [ 39%]
+tests/integration/test_phase3.py::test_fake_and_oversized_evidence_rejected PASSED [ 41%]
+tests/integration/test_phase3.py::test_send_back_clears_pending PASSED   [ 43%]
+tests/integration/test_phase3.py::test_other_staff_cannot_add_progress PASSED [ 45%]
+tests/integration/test_phase3.py::test_request_info_notifies_reporter PASSED [ 47%]
+tests/integration/test_phase3.py::test_merge_moves_votes_without_duplicates PASSED [ 50%]
+tests/integration/test_phase3.py::test_map_shows_only_permitted_issues PASSED [ 52%]
+tests/integration/test_phase3.py::test_map_requires_login PASSED         [ 54%]
+tests/integration/test_phase4.py::test_summary_metrics_from_known_data PASSED [ 56%]
+tests/integration/test_phase4.py::test_dashboard_number_follows_database PASSED [ 58%]
+tests/integration/test_phase4.py::test_dashboard_admin_only PASSED       [ 60%]
+tests/integration/test_phase4.py::test_csv_export_filters_and_neutralises_formulas PASSED [ 62%]
+tests/integration/test_phase4.py::test_admin_detail_shows_rule_based_wording PASSED [ 64%]
+tests/integration/test_phase4.py::test_suggest_fragment_for_citizens PASSED [ 66%]
+tests/integration/test_phase4.py::test_admin_can_correct_category PASSED [ 68%]
+tests/integration/test_phase4.py::test_staff_management PASSED           [ 70%]
+tests/integration/test_security.py::test_login_rate_limit_per_email PASSED [ 72%]
+tests/integration/test_security.py::test_register_rate_limit PASSED      [ 75%]
+tests/integration/test_security.py::test_double_submit_creates_one_report PASSED [ 77%]
+tests/integration/test_security.py::test_security_headers PASSED         [ 79%]
+tests/integration/test_security.py::test_csrf_enforced_on_post PASSED    [ 81%]
+tests/integration/test_security.py::test_media_not_public PASSED         [ 83%]
+tests/integration/test_security.py::test_prod_settings_are_hardened PASSED [ 85%]
+tests/integration/test_seed.py::test_seed_demo_creates_every_role_and_status PASSED [ 87%]
+tests/unit/test_smart.py::test_category_suggestion_title_weighs_double PASSED [ 89%]
+tests/unit/test_smart.py::test_priority_recommendation_explains_itself PASSED [ 91%]
+tests/unit/test_smart.py::test_jaccard_and_haversine PASSED              [ 93%]
+tests/unit/test_smart.py::test_duplicates_near_and_similar_only PASSED   [ 95%]
+tests/unit/test_smart.py::test_hotspots_threshold PASSED                 [ 97%]
+tests/unit/test_smart.py::test_new_issue_stores_recommendations PASSED   [100%]
+
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.13.7-final-0 _______________
+
+Name                                    Stmts   Miss  Cover
+-----------------------------------------------------------
+accounts\__init__.py                        0      0   100%
+accounts\admin.py                           8      0   100%
+accounts\apps.py                            4      0   100%
+accounts\forms.py                          45      2    96%
+accounts\models.py                         13      1    92%
+accounts\permissions.py                    45     11    76%
+accounts\services.py                       42     13    69%
+accounts\urls.py                            4      0   100%
+accounts\views.py                          84     10    88%
+analytics\__init__.py                       0      0   100%
+analytics\admin.py                          1      0   100%
+analytics\apps.py                           4      0   100%
+analytics\models.py                         1      0   100%
+analytics\queries.py                       36      0   100%
+analytics\urls.py                           4      0   100%
+analytics\views.py                         15      0   100%
+config\__init__.py                          0      0   100%
+config\settings\__init__.py                 0      0   100%
+config\settings\base.py                    45      1    98%
+config\settings\dev.py                      2      0   100%
+config\settings\prod.py                    10      0   100%
+config\urls.py                              7      1    86%
+core\__init__.py                            0      0   100%
+core\admin.py                               1      0   100%
+core\apps.py                                4      0   100%
+core\context_processors.py                  8      0   100%
+core\forms.py                              11      1    91%
+core\management\__init__.py                 0      0   100%
+core\management\commands\__init__.py        0      0   100%
+core\management\commands\seed_demo.py      65      0   100%
+core\middleware.py                         10      0   100%
+core\models.py                              1      0   100%
+core\templatetags\__init__.py               0      0   100%
+core\templatetags\ui.py                    32      4    88%
+core\views.py                              17      5    71%
+issues\__init__.py                          0      0   100%
+issues\admin.py                            18      2    89%
+issues\apps.py                              4      0   100%
+issues\csv_export.py                       17      0   100%
+issues\forms.py                            30      3    90%
+issues\models.py                          122      1    99%
+issues\services.py                        255     55    78%
+issues\smart.py                            81      1    99%
+issues\smart_config.py                     15      0   100%
+issues\urls.py                              4      0   100%
+issues\validators.py                       18      1    94%
+issues\views.py                           206     40    81%
+notifications\__init__.py                   0      0   100%
+notifications\admin.py                      1      0   100%
+notifications\apps.py                       4      0   100%
+notifications\models.py                    13      1    92%
+notifications\services.py                  11      0   100%
+notifications\urls.py                       4      0   100%
+notifications\views.py                     14      3    79%
+-----------------------------------------------------------
+TOTAL                                    1336    156    88%
+================ 48 passed, 1 deselected in 154.68s (0:02:34) =================

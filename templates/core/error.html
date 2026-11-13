@@ -1,0 +1,12 @@
+{% extends "layouts/plain.html" %}
+{% load ui %}
+{% block title %}{{ code }}{% endblock %}
+{% block content %}
+<div class="mx-auto flex max-w-lg flex-col items-center px-4 py-24 text-center">
+  <span class="grid size-14 place-items-center rounded-full bg-indigo-50 text-indigo-600">{% icon icon_name|default:"alert-triangle" "size-7" %}</span>
+  <p class="mt-6 text-sm font-semibold text-indigo-600">{{ code }}</p>
+  <h1 class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ heading }}</h1>
+  <p class="mt-3 text-slate-500">{{ text }}</p>
+  <a href="/" class="btn-primary mt-8">{% icon "home" "size-4" %}Back to home</a>
+</div>
+{% endblock %}

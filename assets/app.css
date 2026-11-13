@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@source "../templates";
+@source "../core";
+@source "../accounts";
+@source "../issues";
+@source "../analytics";
+@source "../notifications";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --color-navy-950: #0b1226;
+  --color-navy-900: #111a33;
+  --color-navy-800: #1a2546;
+  --color-navy-700: #26335c;
+  --color-canvas: #f7f8fb;
+}
+
+[x-cloak] { display: none !important; }
+
+@utility card { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
+@utility btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600; }
+@utility btn-primary { @apply btn bg-indigo-600 text-white hover:bg-indigo-500; }
+@utility btn-secondary { @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50; }
+@utility badge { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset; }
+@utility input { @apply block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20; }
+@utility file-input { @apply block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-700 hover:file:bg-indigo-100; }
+@utility label { @apply mb-1 block text-sm font-medium text-slate-700; }
+@utility skeleton { @apply animate-pulse rounded-md bg-slate-200; }

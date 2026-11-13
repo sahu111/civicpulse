@@ -1,0 +1,11 @@
+{% extends "layouts/app.html" %}
+{% block title %}{{ heading }}{% endblock %}
+{% block page_title %}{{ heading }}{% endblock %}
+{% block content %}
+<form method="post" class="card max-w-xl space-y-4 p-5" novalidate>
+  {% csrf_token %}
+  {% include "partials/form_errors.html" %}
+  {% for field in form %}{% include "partials/field.html" %}{% endfor %}
+  <button class="btn-primary">{{ submit }}</button>
+</form>
+{% endblock %}
