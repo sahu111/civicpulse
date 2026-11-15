@@ -50,6 +50,21 @@ class SignInView(LoginView):
     def get_default_redirect_url(self):
         return home_url(self.request.user)
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        # One-click demo sign-in cards: development only, never in production.
+        if settings.DEBUG and settings.DEMO_PASSWORD:
+            labels = {"ADMIN": "Administrator", "STAFF": "Field staff", "CITIZEN": "Citizen"}
+            emails = ["admin@civicpulse.test", "staff1@civicpulse.test",
+                      "citizen1@civicpulse.test", "citizen2@civicpulse.test"]
+            users = {u.email: u for u in User.objects.filter(email__in=emails, is_active=True)}
+            ctx["demo_password"] = settings.DEMO_PASSWORD
+            ctx["demo_accounts"] = [
+                {"email": e, "label": labels[users[e].role], "name": users[e].get_full_name() or users[e].username}
+                for e in emails if e in users
+            ]
+        return ctx
+
 
 class ProfileView(LoginRequiredMixin, UpdateView):
     template_name = "accounts/profile.html"

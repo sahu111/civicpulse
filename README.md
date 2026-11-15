@@ -46,13 +46,15 @@ npm run build:css                 # after changing Tailwind classes in templates
 python manage.py runserver
 ```
 
-`seed_demo` prints the demo accounts and a generated password once. To choose the password yourself, set `DEMO_PASSWORD` in `.env`. Demo coordinates are fictional points.
+`seed_demo` uses `DEMO_PASSWORD` from `.env` (for example `demo1234`), or generates a password and prints it once. Demo coordinates are fictional points near Raipur, Chhattisgarh.
 
-| Role | Email |
-|---|---|
-| Admin | admin@civicpulse.test |
-| Staff | staff1@civicpulse.test, staff2@civicpulse.test |
-| Citizen | citizen1@civicpulse.test, citizen2@civicpulse.test |
+| Role | Name | Email |
+|---|---|---|
+| Admin | Meera Iyer | admin@civicpulse.test |
+| Staff | Arjun Nair, Vikram Sahu | staff1@civicpulse.test, staff2@civicpulse.test |
+| Citizen | Rohan Mehta, Ananya Das | citizen1@civicpulse.test, citizen2@civicpulse.test |
+
+While `DEBUG` is on and `DEMO_PASSWORD` is set, the sign-in page shows these accounts as cards; click one to fill in the form. The cards are never shown with `DEBUG` off.
 
 The optional Django admin site is at `/django-admin/` (`python manage.py createsuperuser`).
 

@@ -71,3 +71,17 @@ def test_prod_settings_are_hardened():
 
     assert prod.DEBUG is False
     assert prod.SESSION_COOKIE_SECURE and prod.CSRF_COOKIE_SECURE and prod.SECURE_SSL_REDIRECT
+
+
+def test_demo_accounts_only_shown_in_debug(client, settings):
+    from accounts.models import User
+
+    User.objects.create_user(username="admin", email="admin@civicpulse.test", password=PASSWORD,
+                             role="ADMIN", first_name="Meera", last_name="Iyer")
+    settings.DEMO_PASSWORD = "demo-pass"
+    settings.DEBUG = True
+    html = client.get("/login/").content.decode()
+    assert "Demo accounts" in html and "Meera Iyer" in html and "Administrator" in html
+    settings.DEBUG = False
+    html = client.get("/login/").content.decode()
+    assert "Demo accounts" not in html and "demo-pass" not in html

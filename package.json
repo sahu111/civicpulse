@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "build:css": "tailwindcss -i assets/app.css -o static/css/app.css --minify",
+    "build:css": "tailwindcss -i assets/app.css -o static/css/app.css --minify && node scripts/legacy-css.cjs",
     "watch:css": "tailwindcss -i assets/app.css -o static/css/app.css --watch"
   },
   "keywords": [],

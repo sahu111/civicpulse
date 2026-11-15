@@ -18,11 +18,11 @@ S = Issue.Status
 DEMO_CENTRE = (Decimal("21.251400"), Decimal("81.629600"))  # near Raipur, Chhattisgarh
 
 USERS = [
-    ("admin", "admin@civicpulse.test", "Asha", "Admin", "ADMIN"),
-    ("staff1", "staff1@civicpulse.test", "Ravi", "Field", "STAFF"),
-    ("staff2", "staff2@civicpulse.test", "Meera", "Works", "STAFF"),
-    ("citizen1", "citizen1@civicpulse.test", "Kiran", "Citizen", "CITIZEN"),
-    ("citizen2", "citizen2@civicpulse.test", "Neha", "Resident", "CITIZEN"),
+    ("admin", "admin@civicpulse.test", "Meera", "Iyer", "ADMIN"),
+    ("staff1", "staff1@civicpulse.test", "Arjun", "Nair", "STAFF"),
+    ("staff2", "staff2@civicpulse.test", "Vikram", "Sahu", "STAFF"),
+    ("citizen1", "citizen1@civicpulse.test", "Rohan", "Mehta", "CITIZEN"),
+    ("citizen2", "citizen2@civicpulse.test", "Ananya", "Das", "CITIZEN"),
 ]
 
 ISSUES = [
@@ -55,6 +55,7 @@ class Command(BaseCommand):
                 email=email, defaults={"username": username, "first_name": first, "last_name": last, "role": role}
             )
             u.role, u.is_staff = role, role == "ADMIN"
+            u.first_name, u.last_name = first, last
             u.set_password(password)
             u.save()
             users[username] = u

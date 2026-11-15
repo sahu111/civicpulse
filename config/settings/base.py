@@ -138,3 +138,6 @@ REST_FRAMEWORK = {
 
 # Default map view: Raipur, Chhattisgarh (seed_demo coordinates are fictional points near it)
 MAP_DEFAULT_CENTER = (21.2514, 81.6296)
+
+# Demo sign-in cards on the login page (shown only when DEBUG is on)
+DEMO_PASSWORD = config("DEMO_PASSWORD", default="")
