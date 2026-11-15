@@ -4,7 +4,7 @@ from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY", default="")  # dev.py supplies a local-only fallback
 DEBUG = config("DEBUG", default=False, cast=bool)
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv())
 
@@ -59,8 +59,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# DB_ENGINE=postgres (default, the target) or sqlite (temporary local fallback)
-if config("DB_ENGINE", default="postgres") == "sqlite":
+# DB_ENGINE=sqlite (default, zero setup) or postgres (set DB_* values in .env)
+if config("DB_ENGINE", default="sqlite") == "sqlite":
     DATABASES = {
         "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3"}
     }

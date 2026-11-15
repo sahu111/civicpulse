@@ -2,7 +2,7 @@ import io
 import secrets
 from decimal import Decimal
 
-from decouple import config
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **opts):
-        password = config("DEMO_PASSWORD", default="") or secrets.token_urlsafe(9)
+        password = settings.DEMO_PASSWORD or secrets.token_urlsafe(9)
         users = {}
         for username, email, first, last, role in USERS:
             u, _ = User.objects.get_or_create(

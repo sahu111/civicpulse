@@ -56,6 +56,16 @@ python manage.py runserver
 
 While `DEBUG` is on and `DEMO_PASSWORD` is set, the sign-in page shows these accounts as cards; click one to fill in the form. The cards are never shown with `DEBUG` off.
 
+### Opening the app from another computer (for example Windows 7)
+
+The server needs Python 3.12+, so it can't run on Windows 7. Run it on a Windows 10/11 or Linux computer and open it from the Windows 7 computer over the same network or Wi-Fi. The pages work in Chrome 109 and Firefox 115 ESR, the last versions for Windows 7 (`npm run build:css` adds colour fallbacks for these older browsers).
+
+1. On the server computer, find its IP address with `ipconfig` (for example `192.168.1.20`).
+2. Add it to `.env`: `ALLOWED_HOSTS=127.0.0.1,localhost,192.168.1.20`
+3. Start the server on all network interfaces: `python manage.py runserver 0.0.0.0:8001`
+4. If Windows Firewall asks, allow Python on **private** networks.
+5. On the Windows 7 computer, open `http://192.168.1.20:8001/`.
+
 The optional Django admin site is at `/django-admin/` (`python manage.py createsuperuser`).
 
 ## Test

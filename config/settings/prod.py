@@ -1,6 +1,11 @@
 from .base import *  # noqa: F401,F403
 
+from django.core.exceptions import ImproperlyConfigured
+
 DEBUG = False
+DEMO_PASSWORD = ""
+if not SECRET_KEY:  # noqa: F405
+    raise ImproperlyConfigured("Set SECRET_KEY in .env for production.")
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
