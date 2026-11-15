@@ -10,6 +10,17 @@ Citizens report problems (potholes, broken lights, leaks) with a photo and a map
 
 Python 3.12+, Django 5.2, PostgreSQL (SQLite fallback for local development), Tailwind CSS v4, HTMX, Alpine.js, Leaflet with OpenStreetMap tiles, Chart.js, django-ratelimit, Pillow, pytest, pytest-django and Playwright. Everything is free and open source. All JS and CSS is served from `static/vendor/`, so the app runs offline apart from map tiles.
 
+## Quick start (no setup)
+
+Install [Python 3.12+](https://www.python.org/downloads/) (tick "Add python.exe to PATH"), clone the repository, then:
+
+- **Windows:** double-click `run.bat`
+- **Linux/macOS:** `sh run.sh`
+
+The first run creates `.venv`, installs packages, creates the SQLite database and loads the demo data. After that it starts the server and opens http://localhost:8001/login/. Click a demo card to sign in (password `demo1234`). No `.env` file is needed for local use.
+
+The sections below are for manual setup or PostgreSQL.
+
 ## Install
 
 ```bash
@@ -22,7 +33,7 @@ npm install                      # only needed to rebuild Tailwind CSS
 
 ## Configure
 
-Copy `.env.example` to `.env`, then set at least `SECRET_KEY`:
+For local development `.env` is optional: without it the app uses SQLite, a local-only dev key and `demo1234`. For anything shared or deployed, copy `.env.example` to `.env` and set a real `SECRET_KEY`:
 
 ```bash
 python -c "from django.core.management.utils import get_random_secret_key as g; print(g())"
@@ -35,7 +46,7 @@ python -c "from django.core.management.utils import get_random_secret_key as g; 
   CREATE DATABASE civicpulse OWNER civicpulse_user;
   ```
   Then set `DB_ENGINE=postgres` and the `DB_*` values in `.env`. (`CREATEDB` lets pytest create its test database.)
-- **SQLite (quick local fallback):** set `DB_ENGINE=sqlite`. No other settings are needed.
+- **SQLite (default):** `DB_ENGINE=sqlite`, or leave it unset. No other settings are needed.
 
 ## Migrate, seed and run
 

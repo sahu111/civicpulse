@@ -21,7 +21,8 @@ if not exist "db.sqlite3" set NEWDB=1
 if "%NEWDB%"=="1" ".venv\Scripts\python.exe" manage.py seed_demo
 
 echo.
-echo CivicPulse is running at http://localhost:8000/  (close this window to stop)
-start "" http://localhost:8000/login/
-".venv\Scripts\python.exe" manage.py runserver 8000
+set PORT=8001
+echo CivicPulse is running at http://localhost:%PORT%/login/  (close this window to stop)
+start "" /b cmd /c "timeout /t 4 >nul & start http://localhost:%PORT%/login/"
+".venv\Scripts\python.exe" manage.py runserver %PORT%
 pause
