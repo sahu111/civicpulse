@@ -1,6 +1,6 @@
 # CivicPulse
 
-A smart city issue reporting and management web app, built with Django as an individual MCA/MSc IT final-year project.
+A smart city issue reporting and management web app, built with Django.
 
 Citizens report problems (potholes, broken lights, leaks) with a photo and a map pin. Admins review, prioritise and assign field staff. Staff record progress and upload completion evidence. Admins verify, and the citizen confirms the fix. Every step is stored in an append-only history.
 
